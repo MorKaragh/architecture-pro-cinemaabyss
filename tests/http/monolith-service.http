@@ -1,0 +1,160 @@
+### CinemaAbyss Monolith Service HTTP Tests
+### RFC 2616 compliant HTTP requests for testing Monolith Service
+### Base URL: http://localhost:8080
+
+### Variables
+@baseUrl = http://localhost:8080
+@apiPath = /api
+
+### ===========================================
+### Health Check Tests
+### ===========================================
+
+### Health Check
+GET {{baseUrl}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### ===========================================
+### Users API Tests
+### ===========================================
+
+### Get All Users
+GET {{baseUrl}}{{apiPath}}/users
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Get User by ID
+GET {{baseUrl}}{{apiPath}}/users?id=1
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Create User
+POST {{baseUrl}}{{apiPath}}/users
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "username": "test_user_http",
+  "email": "test@example.com"
+}
+
+###
+
+### ===========================================
+### Movies API Tests
+### ===========================================
+
+### Get All Movies
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Get Movie by ID
+GET {{baseUrl}}{{apiPath}}/movies?id=1
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Create Movie
+POST {{baseUrl}}{{apiPath}}/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "HTTP Test Movie",
+  "description": "A movie created via HTTP tests",
+  "rating": 8.5,
+  "genres": ["Drama", "Test"]
+}
+
+###
+
+### ===========================================
+### Payments API Tests
+### ===========================================
+
+### Get All Payments
+GET {{baseUrl}}{{apiPath}}/payments
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Get Payment by ID
+GET {{baseUrl}}{{apiPath}}/payments?id=1
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Get Payments by User ID
+GET {{baseUrl}}{{apiPath}}/payments?user_id=1
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Create Payment
+POST {{baseUrl}}{{apiPath}}/payments
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "user_id": 1,
+  "amount": 29.99
+}
+
+###
+
+### ===========================================
+### Subscriptions API Tests
+### ===========================================
+
+### Get All Subscriptions
+GET {{baseUrl}}{{apiPath}}/subscriptions
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Get Subscription by ID
+GET {{baseUrl}}{{apiPath}}/subscriptions?id=1
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Get Subscriptions by User ID
+GET {{baseUrl}}{{apiPath}}/subscriptions?user_id=1
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Create Subscription
+POST {{baseUrl}}{{apiPath}}/subscriptions
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "user_id": 1,
+  "plan_type": "premium",
+  "start_date": "2024-01-15T00:00:00Z",
+  "end_date": "2024-02-15T00:00:00Z"
+}
+
+###
