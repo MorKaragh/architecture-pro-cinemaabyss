@@ -1,0 +1,474 @@
+### CinemaAbyss All Services HTTP Tests
+### RFC 2616 compliant HTTP requests for testing all CinemaAbyss services
+### Comprehensive test suite for the entire microservices architecture
+
+### Variables
+@monolithUrl = http://localhost:8080
+@moviesUrl = http://localhost:8081
+@eventsUrl = http://localhost:8082
+@proxyUrl = http://localhost:8000
+
+### ===========================================
+### System Health Check (All Services)
+### ===========================================
+
+### Monolith Health
+GET {{monolithUrl}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Movies Service Health
+GET {{moviesUrl}}/api/movies/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Events Service Health
+GET {{eventsUrl}}/api/events/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Proxy Service Health
+GET {{proxyUrl}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### ===========================================
+### End-to-End User Journey Tests
+### ===========================================
+
+### 1. User Registration Flow
+### Create User via Monolith
+POST {{monolithUrl}}/api/users
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "username": "e2e_user",
+  "email": "e2e@example.com"
+}
+
+###
+
+### Create User Event
+POST {{eventsUrl}}/api/events/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "user_id": 1,
+  "username": "e2e_user",
+  "action": "registered",
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+
+###
+
+### 2. Movie Management Flow
+### Create Movie via Monolith
+POST {{monolithUrl}}/api/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "E2E Test Movie",
+  "description": "End-to-end test movie",
+  "rating": 8.5,
+  "genres": ["Drama", "Test"]
+}
+
+###
+
+### Create Movie via Movies Service
+POST {{moviesUrl}}/api/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "E2E Movies Service Movie",
+  "description": "Movie created via movies microservice",
+  "rating": 9.0,
+  "genres": ["Action", "Test"]
+}
+
+###
+
+### Create Movie Event
+POST {{eventsUrl}}/api/events/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "movie_id": 1,
+  "title": "E2E Test Movie",
+  "action": "added",
+  "user_id": 1,
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+
+###
+
+### 3. Payment Processing Flow
+### Create Payment via Monolith
+POST {{monolithUrl}}/api/payments
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "user_id": 1,
+  "amount": 29.99
+}
+
+###
+
+### Create Payment Event
+POST {{eventsUrl}}/api/events/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "payment_id": 1,
+  "user_id": 1,
+  "amount": 29.99,
+  "status": "successful",
+  "timestamp": "2024-01-15T11:00:00Z",
+  "method_type": "credit_card"
+}
+
+###
+
+### 4. Subscription Management Flow
+### Create Subscription via Monolith
+POST {{monolithUrl}}/api/subscriptions
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "user_id": 1,
+  "plan_type": "premium",
+  "start_date": "2024-01-15T00:00:00Z",
+  "end_date": "2024-02-15T00:00:00Z"
+}
+
+###
+
+### ===========================================
+### Proxy Service Integration Tests
+### ===========================================
+
+### Movies via Proxy (Load Balanced)
+GET {{proxyUrl}}/api/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Users via Proxy (Direct to Monolith)
+GET {{proxyUrl}}/api/users
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Create Movie via Proxy (Load Balanced)
+POST {{proxyUrl}}/api/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "Proxy Load Balanced Movie",
+  "description": "Movie created via proxy with load balancing",
+  "rating": 8.8,
+  "genres": ["Thriller", "Proxy"]
+}
+
+###
+
+### Create User via Proxy (Direct to Monolith)
+POST {{proxyUrl}}/api/users
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "username": "proxy_integration_user",
+  "email": "proxy@example.com"
+}
+
+###
+
+### ===========================================
+### Data Consistency Tests
+### ===========================================
+
+### Compare Movies from Monolith vs Movies Service
+GET {{monolithUrl}}/api/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+GET {{moviesUrl}}/api/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Compare Movies via Proxy (should route to either service)
+GET {{proxyUrl}}/api/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### ===========================================
+### Event Publishing Tests
+### ===========================================
+
+### Movie View Event
+POST {{eventsUrl}}/api/events/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "movie_id": 1,
+  "title": "E2E Test Movie",
+  "action": "viewed",
+  "user_id": 1,
+  "timestamp": "2024-01-15T12:00:00Z"
+}
+
+###
+
+### User Login Event
+POST {{eventsUrl}}/api/events/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "user_id": 1,
+  "username": "e2e_user",
+  "action": "login",
+  "timestamp": "2024-01-15T12:30:00Z"
+}
+
+###
+
+### Payment Success Event
+POST {{eventsUrl}}/api/events/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "payment_id": 1,
+  "user_id": 1,
+  "amount": 29.99,
+  "status": "successful",
+  "timestamp": "2024-01-15T13:00:00Z",
+  "method_type": "credit_card"
+}
+
+###
+
+### ===========================================
+### Performance and Load Tests
+### ===========================================
+
+### Rapid Movie Creation (Monolith)
+POST {{monolithUrl}}/api/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "Load Test Movie 1",
+  "description": "Performance test movie",
+  "rating": 7.5,
+  "genres": ["Action"]
+}
+
+###
+
+POST {{monolithUrl}}/api/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "Load Test Movie 2",
+  "description": "Performance test movie",
+  "rating": 8.0,
+  "genres": ["Drama"]
+}
+
+###
+
+### Rapid Movie Creation (Movies Service)
+POST {{moviesUrl}}/api/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "Load Test Movie 3",
+  "description": "Performance test movie",
+  "rating": 8.5,
+  "genres": ["Comedy"]
+}
+
+###
+
+### Rapid Event Publishing
+POST {{eventsUrl}}/api/events/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "movie_id": 1,
+  "title": "Load Test Movie",
+  "action": "viewed",
+  "user_id": 1,
+  "timestamp": "2024-01-15T14:00:00Z"
+}
+
+###
+
+POST {{eventsUrl}}/api/events/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "movie_id": 2,
+  "title": "Load Test Movie 2",
+  "action": "viewed",
+  "user_id": 1,
+  "timestamp": "2024-01-15T14:01:00Z"
+}
+
+###
+
+### ===========================================
+### Error Handling and Edge Cases
+### ===========================================
+
+### Invalid JSON
+POST {{monolithUrl}}/api/users
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "username": "test",
+  "email": "test@example.com"
+  // Missing closing brace
+
+###
+
+### Missing Content-Type
+POST {{monolithUrl}}/api/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "Test Movie",
+  "description": "Test Description"
+}
+
+###
+
+### Large Payload
+POST {{eventsUrl}}/api/events/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "movie_id": 999,
+  "title": "Very Long Movie Title That Exceeds Normal Length Limits And Tests The System's Ability To Handle Extended String Values In JSON Payloads For Performance And Stability Testing",
+  "action": "viewed",
+  "user_id": 999,
+  "timestamp": "2024-01-15T15:00:00Z"
+}
+
+###
+
+### ===========================================
+### System Integration Validation
+### ===========================================
+
+### Final System State Check
+GET {{monolithUrl}}/api/users
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+GET {{monolithUrl}}/api/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+GET {{moviesUrl}}/api/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+GET {{proxyUrl}}/api/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+GET {{proxyUrl}}/api/users
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Final Health Check
+GET {{monolithUrl}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+GET {{moviesUrl}}/api/movies/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+GET {{eventsUrl}}/api/events/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+GET {{proxyUrl}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###

@@ -1,0 +1,513 @@
+### CinemaAbyss Events Service HTTP Tests
+### RFC 2616 compliant HTTP requests for testing Events Microservice
+### Base URL: http://localhost:8082
+
+### Variables
+@baseUrl = http://localhost:8082
+@eventsPath = /api/events
+
+### ===========================================
+### Health Check Tests
+### ===========================================
+
+### Health Check - GET request
+GET {{baseUrl}}{{eventsPath}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Health Check with explicit headers
+GET {{baseUrl}}{{eventsPath}}/health
+Accept: application/json
+Content-Type: application/json
+Cache-Control: no-cache
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: health-check-001
+
+###
+
+### ===========================================
+### Movie Events Tests
+### ===========================================
+
+### Create Movie Event - Movie Added
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: movie-event-001
+
+{
+  "movie_id": 1,
+  "title": "The Shawshank Redemption",
+  "action": "added",
+  "user_id": 123,
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+
+###
+
+### Create Movie Event - Movie Viewed
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: movie-event-002
+
+{
+  "movie_id": 2,
+  "title": "The Godfather",
+  "action": "viewed",
+  "user_id": 456,
+  "timestamp": "2024-01-15T14:45:30Z"
+}
+
+###
+
+### Create Movie Event - Movie Rated
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: movie-event-003
+
+{
+  "movie_id": 3,
+  "title": "The Dark Knight",
+  "action": "rated",
+  "user_id": 789,
+  "timestamp": "2024-01-15T16:20:15Z"
+}
+
+###
+
+### Create Movie Event - Auto timestamp (no timestamp provided)
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: movie-event-004
+
+{
+  "movie_id": 4,
+  "title": "Pulp Fiction",
+  "action": "bookmarked",
+  "user_id": 321
+}
+
+###
+
+### ===========================================
+### User Events Tests
+### ===========================================
+
+### Create User Event - User Registered
+POST {{baseUrl}}{{eventsPath}}/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: user-event-001
+
+{
+  "user_id": 100,
+  "username": "john_doe",
+  "action": "registered",
+  "timestamp": "2024-01-15T09:15:00Z"
+}
+
+###
+
+### Create User Event - User Login
+POST {{baseUrl}}{{eventsPath}}/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: user-event-002
+
+{
+  "user_id": 200,
+  "username": "jane_smith",
+  "action": "login",
+  "timestamp": "2024-01-15T11:30:45Z"
+}
+
+###
+
+### Create User Event - User Logout
+POST {{baseUrl}}{{eventsPath}}/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: user-event-003
+
+{
+  "user_id": 300,
+  "username": "bob_wilson",
+  "action": "logout",
+  "timestamp": "2024-01-15T18:45:20Z"
+}
+
+###
+
+### Create User Event - Profile Updated
+POST {{baseUrl}}{{eventsPath}}/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: user-event-004
+
+{
+  "user_id": 400,
+  "username": "alice_brown",
+  "action": "profile_updated",
+  "timestamp": "2024-01-15T13:20:10Z"
+}
+
+###
+
+### Create User Event - Auto timestamp (no timestamp provided)
+POST {{baseUrl}}{{eventsPath}}/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: user-event-005
+
+{
+  "user_id": 500,
+  "username": "charlie_davis",
+  "action": "subscription_changed"
+}
+
+###
+
+### ===========================================
+### Payment Events Tests
+### ===========================================
+
+### Create Payment Event - Payment Successful
+POST {{baseUrl}}{{eventsPath}}/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: payment-event-001
+
+{
+  "payment_id": 1001,
+  "user_id": 123,
+  "amount": 29.99,
+  "status": "successful",
+  "timestamp": "2024-01-15T12:00:00Z",
+  "method_type": "credit_card"
+}
+
+###
+
+### Create Payment Event - Payment Failed
+POST {{baseUrl}}{{eventsPath}}/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: payment-event-002
+
+{
+  "payment_id": 1002,
+  "user_id": 456,
+  "amount": 19.99,
+  "status": "failed",
+  "timestamp": "2024-01-15T14:30:15Z",
+  "method_type": "paypal"
+}
+
+###
+
+### Create Payment Event - Payment Pending
+POST {{baseUrl}}{{eventsPath}}/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: payment-event-003
+
+{
+  "payment_id": 1003,
+  "user_id": 789,
+  "amount": 49.99,
+  "status": "pending",
+  "timestamp": "2024-01-15T16:45:30Z",
+  "method_type": "bank_transfer"
+}
+
+###
+
+### Create Payment Event - Refund Processed
+POST {{baseUrl}}{{eventsPath}}/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: payment-event-004
+
+{
+  "payment_id": 1004,
+  "user_id": 321,
+  "amount": 15.99,
+  "status": "refunded",
+  "timestamp": "2024-01-15T18:20:45Z",
+  "method_type": "credit_card"
+}
+
+###
+
+### Create Payment Event - Auto timestamp (no timestamp provided)
+POST {{baseUrl}}{{eventsPath}}/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: payment-event-005
+
+{
+  "payment_id": 1005,
+  "user_id": 654,
+  "amount": 9.99,
+  "status": "successful",
+  "method_type": "digital_wallet"
+}
+
+###
+
+### ===========================================
+### Error Handling Tests
+### ===========================================
+
+### Invalid JSON - Malformed request body
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: error-test-001
+
+{
+  "movie_id": 1,
+  "title": "Test Movie",
+  "action": "added",
+  "user_id": 123,
+  "timestamp": "2024-01-15T10:30:00Z"
+  // Missing closing brace - invalid JSON
+}
+
+###
+
+### Missing Content-Type header
+POST {{baseUrl}}{{eventsPath}}/user
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: error-test-002
+
+{
+  "user_id": 100,
+  "username": "test_user",
+  "action": "test"
+}
+
+###
+
+### Empty request body
+POST {{baseUrl}}{{eventsPath}}/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: error-test-003
+
+###
+
+### ===========================================
+### Performance Tests
+### ===========================================
+
+### Batch Movie Events - Multiple rapid requests
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: batch-movie-001
+
+{
+  "movie_id": 10,
+  "title": "Batch Movie 1",
+  "action": "viewed",
+  "user_id": 1000,
+  "timestamp": "2024-01-15T20:00:00Z"
+}
+
+###
+
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: batch-movie-002
+
+{
+  "movie_id": 11,
+  "title": "Batch Movie 2",
+  "action": "viewed",
+  "user_id": 1001,
+  "timestamp": "2024-01-15T20:00:01Z"
+}
+
+###
+
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: batch-movie-003
+
+{
+  "movie_id": 12,
+  "title": "Batch Movie 3",
+  "action": "viewed",
+  "user_id": 1002,
+  "timestamp": "2024-01-15T20:00:02Z"
+}
+
+###
+
+### ===========================================
+### Edge Cases Tests
+### ===========================================
+
+### Large payload test
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: large-payload-001
+
+{
+  "movie_id": 999,
+  "title": "Very Long Movie Title That Exceeds Normal Length Limits And Tests The System's Ability To Handle Extended String Values In JSON Payloads",
+  "action": "viewed",
+  "user_id": 9999,
+  "timestamp": "2024-01-15T23:59:59Z"
+}
+
+###
+
+### Special characters in data
+POST {{baseUrl}}{{eventsPath}}/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: special-chars-001
+
+{
+  "user_id": 888,
+  "username": "user@domain.com",
+  "action": "special_chars_test",
+  "timestamp": "2024-01-15T12:00:00Z"
+}
+
+###
+
+### Unicode characters test
+POST {{baseUrl}}{{eventsPath}}/payment
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: unicode-test-001
+
+{
+  "payment_id": 2001,
+  "user_id": 777,
+  "amount": 99.99,
+  "status": "successful",
+  "timestamp": "2024-01-15T15:30:00Z",
+  "method_type": "crypto_currency"
+}
+
+###
+
+### ===========================================
+### HTTP Method Tests (RFC 2616 Compliance)
+### ===========================================
+
+### OPTIONS request (should return allowed methods)
+OPTIONS {{baseUrl}}{{eventsPath}}/movie
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### HEAD request (should return headers only)
+HEAD {{baseUrl}}{{eventsPath}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### PUT request (should return 405 Method Not Allowed)
+PUT {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "movie_id": 1,
+  "title": "Test Movie",
+  "action": "updated"
+}
+
+###
+
+### DELETE request (should return 405 Method Not Allowed)
+DELETE {{baseUrl}}{{eventsPath}}/movie
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### ===========================================
+### HTTP Header Tests
+### ===========================================
+
+### Test with various Accept headers
+GET {{baseUrl}}{{eventsPath}}/health
+Accept: application/json, application/xml, text/plain
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Test with custom headers
+POST {{baseUrl}}{{eventsPath}}/movie
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Custom-Header: test-value
+X-Request-Source: http-test-suite
+X-Test-Case: header-validation
+
+{
+  "movie_id": 50,
+  "title": "Header Test Movie",
+  "action": "tested",
+  "user_id": 500,
+  "timestamp": "2024-01-15T21:00:00Z"
+}
+
+###
+
+### Test with Authorization header (if implemented)
+POST {{baseUrl}}{{eventsPath}}/user
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+Authorization: Bearer test-token-12345
+
+{
+  "user_id": 600,
+  "username": "auth_test_user",
+  "action": "authenticated",
+  "timestamp": "2024-01-15T22:00:00Z"
+}
+
+###

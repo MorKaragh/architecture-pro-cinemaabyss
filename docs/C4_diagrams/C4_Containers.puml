@@ -1,0 +1,51 @@
+@startuml cinemaabyss containers diagram
+!include assets/C4_templates/C4_Container.puml
+
+title Система "Кинобездна" TO BE (C4 Containers)
+
+Person_Ext(user, "Пользователь", "")
+Container_Ext(external_source, "Внешний источник контента", "Java, REST API", "does smth")
+
+Container(metadata_srv, "Сервис метаданных фильмов", "Java, REST API", "does smth")
+Container(user_srv, "Сервис пользователей", "Java, REST API", "Авторизация, каталог пользователей")
+Container(billing_srv, "Сервис биллинга", "Java, REST API", "Управление платежами и подписками")
+Container(ugc_srv, "Сервис пользовательского контента (UGC)", "Java, REST API", "Управление платежами и подписками")
+Container(marketing_srv, "Сервис маркетинга", "Java, REST API", "Управление скидками и рекламой")
+Container(streaming_srv, "Сервис стриминга", "Java, REST API", "Управление скидками и рекламой")
+Container(content_srv, "Сервис стороннего контента", "Java, REST API", "Управление скидками и рекламой")
+Container(event_srv, "Сервис событий", "Java, REST API", "Сомнительно, но ОК")
+Container(gateway, "API Gateway","Java, REST API", "Шлюз в систему")
+Container(bff, "Backend for frontend","NodeJS, REST API", "")
+Container(gui, "Пользовательский UI","Java, REST API", "Пользовательский интерфейс")
+
+ContainerQueue(eventq, "Брокер событий", "Kafka")
+ContainerDb(S3, "Объектное хранилище", "S3")
+ContainerDb(clickhouse, "Аналитическая БД", "ClickHouse")
+
+
+' === СВЯЗИ ===
+
+Rel(user, gui, "HTTPS", "Веб-интерфейс")
+Rel(gui, bff, "HTTPS", "API запросы")
+Rel(bff, gateway, "HTTP", "Маршрутизация")
+Rel(gateway, user_srv, "HTTP", "Управление пользователями")
+Rel(gateway, streaming_srv, "HTTP", "Стриминг контента")
+Rel(gateway, metadata_srv, "HTTP", "Метаданные фильмов")
+Rel(gateway, billing_srv, "HTTP", "Платежи и подписки")
+Rel(gateway, marketing_srv, "HTTP", "Маркетинговые кампании")
+Rel(gateway, ugc_srv, "HTTP", "Пользовательский контент")
+
+Rel(user_srv, eventq, "Publish", "События пользователей")
+Rel(streaming_srv, eventq, "Publish", "События просмотров")
+Rel(billing_srv, eventq, "Publish", "События платежей")
+BiRel(eventq, event_srv, "Subscribe/Publish", "Обработка событий")
+
+Rel(ugc_srv, clickhouse, "SQL", "Аналитика UGC")
+Rel(event_srv, clickhouse, "SQL", "Аналитика событий")
+
+Rel(streaming_srv, S3, "S3 API", "Видеофайлы")
+Rel(streaming_srv, content_srv, "HTTP", "Получение контента")
+
+Rel(content_srv, external_source, "HTTP", "Внешние API")
+
+@enduml

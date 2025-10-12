@@ -1,0 +1,218 @@
+### CinemaAbyss Proxy Service HTTP Tests
+### RFC 2616 compliant HTTP requests for testing Proxy Service
+### Base URL: http://localhost:8000
+
+### Variables
+@baseUrl = http://localhost:8000
+@apiPath = /api
+
+### ===========================================
+### Health Check Tests
+### ===========================================
+
+### Health Check
+GET {{baseUrl}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### ===========================================
+### Movies API via Proxy (Load Balanced)
+### ===========================================
+
+### Get All Movies via Proxy
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Get Movie by ID via Proxy
+GET {{baseUrl}}{{apiPath}}/movies?id=1
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Create Movie via Proxy
+POST {{baseUrl}}{{apiPath}}/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "Proxy Test Movie",
+  "description": "A movie created via proxy service",
+  "rating": 9.0,
+  "genres": ["Action", "Proxy"]
+}
+
+###
+
+### ===========================================
+### Users API via Proxy (Direct to Monolith)
+### ===========================================
+
+### Get All Users via Proxy
+GET {{baseUrl}}{{apiPath}}/users
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Get User by ID via Proxy
+GET {{baseUrl}}{{apiPath}}/users?id=1
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Create User via Proxy
+POST {{baseUrl}}{{apiPath}}/users
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "username": "proxy_user",
+  "email": "proxy@example.com"
+}
+
+###
+
+### ===========================================
+### Load Balancing Tests
+### ===========================================
+
+### Multiple requests to test load balancing
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: lb-test-001
+
+###
+
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: lb-test-002
+
+###
+
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: lb-test-003
+
+###
+
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: lb-test-004
+
+###
+
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: lb-test-005
+
+###
+
+### ===========================================
+### Performance Tests
+### ===========================================
+
+### Rapid sequential requests
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: perf-test-001
+
+###
+
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: perf-test-002
+
+###
+
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Request-ID: perf-test-003
+
+###
+
+### ===========================================
+### Error Handling Tests
+### ===========================================
+
+### Invalid endpoint (should return 404)
+GET {{baseUrl}}/invalid-endpoint
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Invalid method for endpoint
+PUT {{baseUrl}}{{apiPath}}/movies
+Content-Type: application/json
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+{
+  "title": "Invalid Method Test"
+}
+
+###
+
+### ===========================================
+### HTTP Method Tests (RFC 2616 Compliance)
+### ===========================================
+
+### OPTIONS request
+OPTIONS {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### HEAD request
+HEAD {{baseUrl}}/health
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### ===========================================
+### Header Tests
+### ===========================================
+
+### Test with custom headers
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+X-Custom-Header: test-value
+X-Request-Source: http-test-suite
+X-Test-Case: proxy-header-validation
+
+###
+
+### Test with various Accept headers
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json, application/xml, text/plain
+User-Agent: CinemaAbyss-Test-Client/1.0
+
+###
+
+### Test with Authorization header
+GET {{baseUrl}}{{apiPath}}/movies
+Accept: application/json
+User-Agent: CinemaAbyss-Test-Client/1.0
+Authorization: Bearer test-token-12345
+
+###
