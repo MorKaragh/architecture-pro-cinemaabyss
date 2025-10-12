@@ -9,7 +9,7 @@ Container_Ext(external_source, "Внешний источник контента
 Container(metadata_srv, "Сервис метаданных фильмов", "Java, REST API", "does smth")
 Container(user_srv, "Сервис пользователей", "Java, REST API", "Авторизация, каталог пользователей")
 Container(billing_srv, "Сервис биллинга", "Java, REST API", "Управление платежами и подписками")
-Container(ugc_srv, "Сервис пользовательского контента", "Java, REST API", "Управление платежами и подписками")
+Container(ugc_srv, "Сервис пользовательского контента (UGC)", "Java, REST API", "Управление платежами и подписками")
 Container(marketing_srv, "Сервис маркетинга", "Java, REST API", "Управление скидками и рекламой")
 Container(streaming_srv, "Сервис стриминга", "Java, REST API", "Управление скидками и рекламой")
 Container(content_srv, "Сервис стороннего контента", "Java, REST API", "Управление скидками и рекламой")
